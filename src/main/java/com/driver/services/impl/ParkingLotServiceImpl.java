@@ -28,29 +28,32 @@ public class ParkingLotServiceImpl implements ParkingLotService {
     }
 
     @Override
-    public Spot addSpot(int parkingLotId, Integer numberOfWheels, Integer pricePerHour) {
+    public Spot addSpot(int parkingLotId, Integer numberOfWheels, Integer pricePerHour) throws Exception {
        Spot spot = new Spot();
 
-       ParkingLot parkingLot = parkingLotRepository1.findById(parkingLotId).get();
-       spot.setParkingLot(parkingLot);
+       try{
+           ParkingLot parkingLot = parkingLotRepository1.findById(parkingLotId).get();
+           spot.setParkingLot(parkingLot);
+           SpotType spotType;
+           if(numberOfWheels<=2)
+               spotType = SpotType.TWO_WHEELER;
 
-       SpotType spotType;
-       if(numberOfWheels<=2)
-           spotType = SpotType.TWO_WHEELER;
+           else if(numberOfWheels>2&&numberOfWheels<=4)
+               spotType = SpotType.FOUR_WHEELER;
 
-       else if(numberOfWheels>2&&numberOfWheels<=4)
-           spotType = SpotType.FOUR_WHEELER;
+           else spotType = SpotType.OTHERS;
 
-       else spotType = SpotType.OTHERS;
+           spot.setSpotType(spotType);
+           spot.setPricePerHour(pricePerHour);
+           spot.setOccupied(false);
+           List<Spot> spotList = parkingLot.getSpotList();
+           spotList.add(spot);
+           parkingLot.setSpotList(spotList);
 
-       spot.setSpotType(spotType);
-       spot.setPricePerHour(pricePerHour);
-       spot.setOccupied(false);
-       List<Spot> spotList = parkingLot.getSpotList();
-       spotList.add(spot);
-       parkingLot.setSpotList(spotList);
-
-       parkingLotRepository1.save(parkingLot);
+           parkingLotRepository1.save(parkingLot);
+       }catch (Exception e){
+           throw new Exception("NullPointer exception");
+       }
        return spot;
     }
 
@@ -64,16 +67,20 @@ public class ParkingLotServiceImpl implements ParkingLotService {
     }
 
     @Override
-    public Spot updateSpot(int parkingLotId, int spotId, int pricePerHour) {
-          Spot spot = spotRepository1.findById(spotId).get();
-          ParkingLot parkingLot=parkingLotRepository1.findById(parkingLotId).get();
+    public Spot updateSpot(int parkingLotId, int spotId, int pricePerHour) throws Exception {
+        try{
+            Spot spot = spotRepository1.findById(spotId).get();
+            ParkingLot parkingLot=parkingLotRepository1.findById(parkingLotId).get();
 
-        spot.setParkingLot(parkingLot);
-        spot.setPricePerHour(pricePerHour);
+            spot.setParkingLot(parkingLot);
+            spot.setPricePerHour(pricePerHour);
 
-        spotRepository1.save(spot);
-
-        return spot;
+            spotRepository1.save(spot);
+            return spot;
+        }
+        catch (Exception e){
+            throw new Exception("NoSuchElement No value present");
+        }
 //        ParkingLot parkingLot = parkingLotRepository1.findById(parkingLotId).get();
 //        List<Spot> spotList = parkingLot.getSpotList();
 //        for(Spot spot:spotList){

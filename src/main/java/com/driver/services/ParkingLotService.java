@@ -7,11 +7,11 @@ public interface ParkingLotService {
     
     void deleteSpot(int spotId);
 
-    Spot updateSpot(int parkingLotId, int spotId, int pricePerHour);
+    Spot updateSpot(int parkingLotId, int spotId, int pricePerHour) throws Exception;
 
     void deleteParkingLot(int parkingLotId);
 
     ParkingLot addParkingLot(String name, String address);
 
-    Spot addSpot(int parkingLotId, Integer numberOfWheels, Integer pricePerHour);
+    Spot addSpot(int parkingLotId, Integer numberOfWheels, Integer pricePerHour) throws Exception;
 }
